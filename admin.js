@@ -631,9 +631,63 @@ document.addEventListener('DOMContentLoaded', async () => {
     window.deleteDiscount = async function(id) {
         if(confirm("Delete permanently?")) { await supabaseClient.from('discounts').delete().eq('id', id); loadDiscounts(); }
     }
-    // --- MODAL & CHIPS ---
-    document.getElementById('profile-trigger').onclick=()=>document.getElementById('profile-modal').style.display='flex';
-    document.getElementById('save-profile-btn').onclick=async()=>{ const u=document.getElementById('edit-self-user').value; const p=document.getElementById('edit-self-pass').value; const c=document.getElementById('header-username').innerText; await supabaseClient.from('admins').update({username:u,password:p}).eq('username',c); window.location.href='login.html'; };
+    
+    // --- MODAL & CHIPS (Updated Logic) ---
+    document.getElementById('profile-trigger').onclick = () => {
+        document.getElementById('profile-modal').style.display = 'flex';
+        // Pre-fill current username for convenience (Logic)
+        document.getElementById('edit-self-user').value = document.getElementById('header-username').innerText;
+    };
+    
+    // 1. EDIT PROFILE LOGIC
+    document.getElementById('save-profile-btn').onclick = async () => {
+        const u = document.getElementById('edit-self-user').value.trim();
+        const p = document.getElementById('edit-self-pass').value.trim();
+        const ph = document.getElementById('edit-self-phone').value.trim();
+        const em = document.getElementById('edit-self-email').value.trim();
+        const currentName = document.getElementById('header-username').innerText;
+
+        // Validation: All fields mandatory
+        if (!u || !p || !ph || !em) return alert("All fields (Username, Password, Phone, Email) are mandatory.");
+
+        // Update Supabase
+        const { error } = await supabaseClient.from('admins')
+            .update({ username: u, password: p, phone: ph, email: em })
+            .eq('username', currentName); // Assuming we identify by current username session
+
+        if (error) {
+            console.error(error);
+            alert("Error updating profile: " + error.message);
+        } else {
+            alert("Profile updated successfully! Please login again.");
+            window.location.href = 'login.html';
+        }
+    };
+
+    // 2. CREATE NEW ADMIN LOGIC (Inside Modal)
+    document.getElementById('modal-create-admin-btn').onclick = async () => {
+        const newU = document.getElementById('modal-new-admin-user').value.trim();
+        const newP = document.getElementById('modal-new-admin-pass').value.trim();
+
+        // Validation: Mandatory fields
+        if (!newU || !newP) return alert("Username and Password are required for new admin.");
+
+        // Insert into Supabase
+        const { error } = await supabaseClient.from('admins').insert([{ username: newU, password: newP }]);
+
+        if (error) {
+            console.error(error);
+            alert("Error creating admin: " + error.message);
+        } else {
+            alert("New Admin Created Successfully!");
+            // Clear inputs
+            document.getElementById('modal-new-admin-user').value = '';
+            document.getElementById('modal-new-admin-pass').value = '';
+            // Refresh admin list if user is currently viewing the Users tab
+            if(document.getElementById('user-tab-admin').style.display === 'block') loadAdminList();
+        }
+    };
+
     window.toggleChip=(id)=>{ document.querySelectorAll('.chip-menu').forEach(m=>m.classList.remove('show')); document.getElementById('menu-'+id).classList.add('show'); };
     const ts=Array.from({length:24},(_,i)=>`${i.toString().padStart(2,'0')}:00`); const ds=['Mon','Tue','Wed','Thu','Fri','Sat','Sun']; ['start-time','end-time'].forEach(t=>fillM(t,ts)); ['start-day','end-day'].forEach(t=>fillM(t,ds));
     function fillM(id,arr){ const m=document.getElementById('menu-'+id); arr.forEach(v=>{ const d=document.createElement('div'); d.className='chip-option'; d.innerText=v; d.onclick=()=>{ document.querySelector(`#chip-${id} .val`).innerText=v; m.classList.remove('show'); }; m.appendChild(d); }); }
