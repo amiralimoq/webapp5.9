@@ -341,15 +341,41 @@
         </main>
     </div>
 
-    <!-- PROFILE MODAL -->
+    <!-- PROFILE MODAL (Updated) -->
     <div class="modal-overlay" id="profile-modal">
         <div class="modal-content">
-            <h3>Edit Profile</h3><br>
-            <input type="text" id="edit-self-user" class="form-control" placeholder="New Username">
-            <input type="text" id="edit-self-pass" class="form-control" placeholder="New Password">
-            <div style="display: flex; gap: 10px;">
-                <button class="btn-add" id="save-profile-btn">Save</button>
-                <button class="btn-add" style="background:#eee; color:#333;" onclick="document.getElementById('profile-modal').style.display='none'">Cancel</button>
+            <i class="ri-close-line modal-close-icon" onclick="document.getElementById('profile-modal').style.display='none'"></i>
+            
+            <!-- SECTION 1: EDIT PROFILE -->
+            <h3 style="margin-bottom: 15px;">Edit Account</h3>
+            <div style="margin-bottom: 20px;">
+                <label style="font-size:12px; font-weight:600; color:#888;">Username *</label>
+                <input type="text" id="edit-self-user" class="form-control" placeholder="roya" style="margin-bottom:10px;">
+                
+                <label style="font-size:12px; font-weight:600; color:#888;">Password *</label>
+                <input type="text" id="edit-self-pass" class="form-control" placeholder="maman" style="margin-bottom:10px;">
+                
+                <label style="font-size:12px; font-weight:600; color:#888;">Phone Number *</label>
+                <input type="text" id="edit-self-phone" class="form-control" placeholder="09..." style="margin-bottom:10px;">
+                
+                <label style="font-size:12px; font-weight:600; color:#888;">Email *</label>
+                <input type="email" id="edit-self-email" class="form-control" placeholder="example@mail.com" style="margin-bottom:10px;">
+                
+                <button class="btn-add" id="save-profile-btn">Save Changes</button>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+            <!-- SECTION 2: CREATE NEW ADMIN (New Feature) -->
+            <h3 style="margin-bottom: 15px;">Create New Admin</h3>
+            <div style="background: #F8F9FD; padding: 15px; border-radius: 12px; border: 1px solid #eee;">
+                <label style="font-size:12px; font-weight:600; color:#888;">New Admin Username *</label>
+                <input type="text" id="modal-new-admin-user" class="form-control" placeholder="New Username" style="margin-bottom:10px;">
+                
+                <label style="font-size:12px; font-weight:600; color:#888;">New Admin Password *</label>
+                <input type="text" id="modal-new-admin-pass" class="form-control" placeholder="New Password" style="margin-bottom:10px;">
+                
+                <button class="btn-add" id="modal-create-admin-btn" style="background-color: #2ECC71;">Create Admin</button>
             </div>
         </div>
     </div>
